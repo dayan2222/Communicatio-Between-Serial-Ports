@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -30,7 +31,36 @@ namespace WindowsFormsApp1
             cboPort.SelectedIndex = 0;
             btnClose.Enabled = false;
 
+            btnOpen.Enabled = false;
+            btnClose.Enabled = true;
+
+
+            InitializeComponent();
+            new Thread(SampleFunction).Start();
+
         }
+
+        public void AppendTextBox(string value)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<string>(AppendTextBox), new object[] { value });
+                return;
+            }
+            txtReceive.Text += value;
+        }
+
+        void SampleFunction()
+        {
+            // Gets executed on a seperate thread and 
+            // doesn't block the UI while sleeping
+            for (int i = 0; i < 5; i++)
+            {
+                AppendTextBox("hi.  ");
+                Thread.Sleep(1);
+            }
+        }
+
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
